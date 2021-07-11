@@ -22,14 +22,19 @@ app.post('/posts/:id/comments', async (req, res) => {
   const { content } = req.body;
 
   const comments = commentsByPostId[id] || [];
-  comments.push({ id: commentId, content });
+  comments.push({ id: commentId, content, status: 'pending' });
 
   commentsByPostId[id] = comments;
 
   await axios
     .post('http://localhost:4005/events', {
       type: 'CommentCreated',
-      data: { id: commentId, content, postId: req.params.id },
+      data: {
+        id: commentId,
+        content,
+        postId: req.params.id,
+        status: 'pending',
+      },
     })
     .catch((e) =>
       console.log({
@@ -43,8 +48,33 @@ app.post('/posts/:id/comments', async (req, res) => {
   res.status(201).send(comments);
 });
 
-app.post('/events', (req, res) => {
+app.post('/events', async (req, res) => {
   console.log('Received event', req.body.type);
+
+  const { type, data } = req.body;
+  if (type === 'CommentModerated') {
+    // update the status in comments service data
+    const { postId, id, status } = data;
+    const comments = commentsByPostId[postId];
+
+    const commentToBeUpdated = comments.find((comment) => comment.id === id);
+    commentToBeUpdated.status = status;
+
+    // notify everyone else that update has happened
+    await axios
+      .post('http://localhost:4005/events', {
+        type: 'CommentUpdated',
+        data,
+      })
+      .catch((e) =>
+        console.log({
+          error: e.message,
+          data: e.config.data,
+          method: e.config.method,
+          url: e.config.url,
+        })
+      );
+  }
 
   res.send({});
   // .end prevents 'socket hang up' axios error on eventBus side

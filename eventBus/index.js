@@ -41,6 +41,17 @@ app.post('/events', (req, res) => {
     errorMessage += e.message;
   });
 
+  // moderation service
+  axios.post('http://localhost:4003/events', event).catch((e) => {
+    console.log({
+      error: e.message,
+      data: e.config.data,
+      method: e.config.method,
+      url: e.config.url,
+    });
+    errorMessage += e.message;
+  });
+
   if (errorMessage) {
     res.send({ status: errorMessage });
   } else {
