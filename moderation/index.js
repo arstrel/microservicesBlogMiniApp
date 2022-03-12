@@ -14,7 +14,7 @@ const handleEvent = async (type, data) => {
 
     // eventBus service
     await axios
-      .post('http://localhost:4005/events', {
+      .post('http://event-bus-srv:4005/events', {
         type: 'CommentModerated',
         data: newComment,
       })
@@ -46,7 +46,7 @@ app.listen(4003, async () => {
 
   try {
     // eventBus service
-    const res = await axios.get('http://localhost:4005/events');
+    const res = await axios.get('http://event-bus-srv:4005/events');
 
     for (let event of res.data) {
       console.log('Processing event:', event.type);

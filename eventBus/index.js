@@ -24,38 +24,38 @@ app.post('/events', (req, res) => {
     });
   });
 
-  // // comment service
-  // axios.post('http://localhost:4001/events', event).catch((e) => {
-  //   errorMessage += e.message;
-  //   console.log({
-  //     error: e.message,
-  //     data: e.config.data,
-  //     method: e.config.method,
-  //     url: e.config.url,
-  //   });
-  // });
+  // comment service
+  axios.post('http://comments-srv:4001/events', event).catch((e) => {
+    errorMessage += e.message;
+    console.log({
+      error: e.message,
+      data: e.config.data,
+      method: e.config.method,
+      url: e.config.url,
+    });
+  });
 
-  // // query service
-  // axios.post('http://localhost:4002/events', event).catch((e) => {
-  //   console.log({
-  //     error: e.message,
-  //     data: e.config.data,
-  //     method: e.config.method,
-  //     url: e.config.url,
-  //   });
-  //   errorMessage += e.message;
-  // });
+  // query service
+  axios.post('http://query-srv:4002/events', event).catch((e) => {
+    console.log({
+      error: e.message,
+      data: e.config.data,
+      method: e.config.method,
+      url: e.config.url,
+    });
+    errorMessage += e.message;
+  });
 
-  // // moderation service
-  // axios.post('http://localhost:4003/events', event).catch((e) => {
-  //   console.log({
-  //     error: e.message,
-  //     data: e.config.data,
-  //     method: e.config.method,
-  //     url: e.config.url,
-  //   });
-  //   errorMessage += e.message;
-  // });
+  // moderation service
+  axios.post('http://moderation-srv:4003/events', event).catch((e) => {
+    console.log({
+      error: e.message,
+      data: e.config.data,
+      method: e.config.method,
+      url: e.config.url,
+    });
+    errorMessage += e.message;
+  });
 
   if (errorMessage) {
     res.send({ status: errorMessage });
