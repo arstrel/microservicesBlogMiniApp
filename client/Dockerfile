@@ -1,4 +1,6 @@
-FROM node:alpine
+FROM node:16-alpine
+
+ENV CI=true
 
 WORKDIR /app
 
